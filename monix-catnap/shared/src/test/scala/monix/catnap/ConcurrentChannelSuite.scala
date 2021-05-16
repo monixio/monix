@@ -108,6 +108,29 @@ abstract class BaseConcurrentChannelSuite[S <: Scheduler] extends TestSuite[S] w
     } yield r
   }
 
+  testIO("consumer queue is empty after pulling all messages", times = repeatForFastTests) { implicit ec =>
+    ConcurrentChannel.withConfig[IO, Int, Int](boundedConfig).flatMap { chan =>
+      chan.consume.use { c =>
+        def checkEmpty(expect: Boolean) = c.isEmpty.map(bool => assert(bool == expect))
+        for {
+          _ <- checkEmpty(true)
+          _ <- chan.push(1)
+          _  <- checkEmpty(false)
+          _ <- chan.push(2)
+          _  <- checkEmpty(false)
+          _ <- c.pull
+          _ <- checkEmpty(false)
+          _ <- c.pull
+          _ <- checkEmpty(true)
+          _  <- chan.halt(0)
+          _ <- checkEmpty(true)
+          _ <- c.pull
+          _ <- checkEmpty(true)
+        } yield ()
+      }
+    }
+  }
+
   testIO("consumers can receive push", times = repeatForFastTests) { implicit ec =>
     for {
       chan  <- ConcurrentChannel[IO].withConfig[Int, Int](boundedConfig)
