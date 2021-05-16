@@ -66,14 +66,14 @@ object ChainedObservable {
     // Subscription can be synchronous, which can trigger really
     // weird ordering issues, therefore we need a light async boundary
     // to delay it and force ordering; plus it protects from stack overflows
-    out.scheduler.executeTrampolined { () =>
       source match {
         case _: ChainedObservable[_] =>
-          source.asInstanceOf[ChainedObservable[A]].unsafeSubscribeFn(conn, out)
+          out.scheduler.executeTrampolined { () =>
+            source.asInstanceOf[ChainedObservable[A]].unsafeSubscribeFn(conn, out)
+          }
         case _ =>
           conn := source.unsafeSubscribeFn(out)
           ()
-      }
     }
   }
 }
