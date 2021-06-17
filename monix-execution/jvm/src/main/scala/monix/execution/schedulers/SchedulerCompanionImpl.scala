@@ -22,6 +22,7 @@ import java.util.concurrent._
 import monix.execution.{Features, Scheduler, SchedulerCompanion, UncaughtExceptionReporter}
 // Prevents conflict with the deprecated symbol
 import monix.execution.{ExecutionModel => ExecModel}
+import monix.execution.workstealing.WorkStealingThreadPool
 
 import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
@@ -463,6 +464,12 @@ private[execution] class SchedulerCompanionImpl extends SchedulerCompanion {
     * [[io]].
     */
   object Implicits extends ImplicitsLike {
+
+    private lazy val workStealingThreadPool: ExecutionContext = {
+      val cpus = math.max(2, Runtime.getRuntime().availableProcessors())
+      new WorkStealingThreadPool(cpus, "monix-compute")
+    }
+
     /** A global [[monix.execution.Scheduler Scheduler]] instance,
       * provided for convenience, piggy-backing on top of Scala's
       * own `concurrent.ExecutionContext.global`, which is a
@@ -473,7 +480,7 @@ private[execution] class SchedulerCompanionImpl extends SchedulerCompanion {
     implicit lazy val global: Scheduler =
       AsyncScheduler(
         DefaultScheduledExecutor,
-        ExecutionContext.Implicits.global,
+        workStealingThreadPool,
         ExecModel.Default
       )
 
