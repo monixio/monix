@@ -34,7 +34,7 @@ package object eval {
     /**
       * DEPRECATED — switch to Scala 2.12+ and [[monix.eval.Task.from Task.from]].
       */
-    @deprecated("Switch to Scala 2.12+ and Task.from", "3.0.0")
+    @deprecated("Switch to Scala 2.12+ and Task.from", "3.0.1")
     def fromCompletableFuture[A](cf: CompletableFuture[A]): Task[A] = {
       // $COVERAGE-OFF$
       convert(cf)
@@ -44,7 +44,7 @@ package object eval {
     /**
       * DEPRECATED — switch to Scala 2.12+ and [[monix.eval.Task.from Task.from]].
       */
-    @deprecated("Switch to Scala 2.12+ and Task.from", "3.0.0")
+    @deprecated("Switch to Scala 2.12+ and Task.from", "3.0.1")
     def deferCompletableFutureAction[A](f: Scheduler => CompletableFuture[A]): Task[A] = {
       // $COVERAGE-OFF$
       Task.deferAction { sc =>

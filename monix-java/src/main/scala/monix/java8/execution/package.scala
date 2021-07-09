@@ -36,7 +36,7 @@ package object execution {
       * DEPRECATED — switch to Scala 2.12+ and
       * [[monix.execution.CancelableFuture.fromJavaCompletable CancelableFuture.fromJavaCompletable]].
       */
-    @deprecated("Switch to Scala 2.12+ and CancelableFuture.fromJavaCompletable", "3.0.0")
+    @deprecated("Switch to Scala 2.12+ and CancelableFuture.fromJavaCompletable", "3.0.1")
     def asScala(implicit ec: ExecutionContext): CancelableFuture[A] = {
       // $COVERAGE-OFF$
       CancelableFuture.async(cb => {
@@ -69,7 +69,7 @@ package object execution {
       * DEPRECATED — switch to Scala 2.12+ and
       * [[monix.execution.FutureUtils.toJavaCompletable FutureUtils.toJavaCompletable]].
       */
-    @deprecated("Switch to Scala 2.12+ and FutureUtils.toJavaCompletable", "3.0.0")
+    @deprecated("Switch to Scala 2.12+ and FutureUtils.toJavaCompletable", "3.0.1")
     def asJava(implicit ec: ExecutionContext): CompletableFuture[A] = {
       // $COVERAGE-OFF$
       val cf = new CompletableFuture[A]()
